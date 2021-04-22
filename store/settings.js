@@ -8,7 +8,7 @@ const properties = [
     text: "Thời gian chờ màn hình",
     prop: "time_wait_screen",
     def: false
-  },
+  },/////////////
   {
     text: "Đồng hồ bấm giờ",
     prop: "stop_watch",
@@ -53,13 +53,13 @@ const properties = [
     prop: "hidden_num_used",
     sub: "Ẩn các số đã được đặt trong 9 ô khác nhau.",
     def: true
-  },
+  },///////////
   {
     text: "Bôi đậm trùng lặp",
     prop: "bold_num_repeat",
     sub: "Bôi đạm những số lặp lại trong cùng một hàng, cột và khối.",
     def: true
-  },
+  },//////
   {
     text: "Tô sáng theo vùng",
     prop: "highlight_by_regison",

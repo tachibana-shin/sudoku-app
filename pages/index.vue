@@ -25,18 +25,18 @@
         ></v-img>
 
         <div class="text-body-2 mt-3 text-center font-weight-medium">
-          Thử thách hàng ngày
+          {{ $t("DAILY_CHALLENGE")}}
         </div>
         <div class="text-caption secondary--text font-weight-regular">
           Tháng 4 18
         </div>
-
+        
         <button
           class="play-challeng lighten text-body-2 text-center font-weight-regular blue--text text-uppercase"
           v-ripple
           @click="selLevel(2, true)"
         >
-          Chơi
+          {{ $t("PLAY") }}
         </button>
       </v-card>
 
@@ -55,7 +55,7 @@
           v-if="$store.state.playground.inited"
         >
           <div>
-            Tiếp tục trò chơi
+            {{ $t("CONTINUE_THE_GAME") }}
             <div class="text-caption status-continue">
               <v-icon size="1.3em">mdi-clock-outline</v-icon>
               {{ time }} - {{ level }}
@@ -73,7 +73,7 @@
           :dark="$store.state.playground.inited === false"
           @click="newGame"
         >
-          Ván mới
+          {{ $t("NEW_GAME") }}
         </v-btn>
       </div>
     </v-col>

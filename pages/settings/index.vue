@@ -12,7 +12,7 @@
 
       <div class="my-2">
         <template
-          v-for="({ text, sub, divider, noSwitch, prop }, index) in $store.state.settings
+          v-for="({ text, sub, divider, noSwitch, prop, validate }, index) in $store.state.settings
             .properties"
         >
           <v-divider v-if="divider" :key="index"></v-divider>
@@ -24,7 +24,7 @@
               </v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action v-if="!noSwitch && prop">
-              <v-switch inset :input-value="$store.state.settings[prop]" @change="$store.commit(`settings/set`, { prop, value: $event })"></v-switch>
+              <v-switch inset :input-value="$store.state.settings[prop]" @change="$store.commit(`settings/set`, { prop, value: $event })" :readonly="validate"></v-switch>
             </v-list-item-action>
           </v-list-item>
         </template>

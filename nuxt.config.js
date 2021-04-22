@@ -38,7 +38,8 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
     "@nuxtjs/vuetify",
-    "@nuxtjs/device"
+    "@nuxtjs/device",
+    "nuxt-use-sound"
   ],
 
   device: {
@@ -54,8 +55,86 @@ export default {
         localStorage: ["battles-complete", "settings", "playground"],
         sessionStorage: ["system"]
       }
+    ],
+    [
+      "nuxt-i18n",
+      {
+        lazy: true,
+        locales: [
+          { code: "en", iso: "en-US", file: "en.json" },
+          { code: "vi", iso: "vi-VN", file: "vi.json" }
+        ],
+        langDir: "i18n/",
+        defaultLocale: "en"
+      }
     ]
   ],
+
+  sound: {
+    button: {
+      src: "/sounds/sound_button.ogg",
+      options: {
+        volume: 0.5
+      }
+    },
+    edit_note: {
+      src: "/sounds/sound_edit_note.ogg",
+      options: {
+        volume: 0.5
+      }
+    },
+    edit_value: {
+      src: "/sounds/sound_edit_value.ogg",
+      options: {
+        volume: 0.5
+      }
+    },
+    erase: {
+      src: "/sounds/sound_erase.ogg",
+      options: {
+        volume: 0.5
+      }
+    },
+    error: {
+      src: "/sounds/sound_error.ogg",
+      options: {
+        volume: 0.5
+      }
+    },
+    hint: {
+      src: "/sounds/sound_hint.ogg",
+      options: {
+        volume: 0.5
+      }
+    },
+
+    pencil_off: {
+      src: "/sounds/pencil_off.ogg",
+      options: {
+        volume: 0.5
+      }
+    },
+    pencil_on: {
+      src: "/sounds/pencil_on.ogg",
+      options: {
+        volume: 0.5
+      }
+    },
+
+    undo: {
+      src: "/sounds/undo.ogg",
+      options: {
+        volume: 0.5
+      }
+    },
+
+    win: {
+      src: "/sounds/win.ogg",
+      options: {
+        volume: 0.5
+      }
+    }
+  },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
@@ -86,6 +165,15 @@ export default {
   build: {
     babel: {
       plugins: ["@babel/plugin-proposal-optional-chaining"]
+    },
+    extend(config, ctx) {
+      config.module.rules.push({
+        test: /\.(ogg|mp3|wav|mpe?g)$/i,
+        loader: "file-loader",
+        options: {
+          name: "[path][name].[ext]"
+        }
+      });
     }
   }
 };

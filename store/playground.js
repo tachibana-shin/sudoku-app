@@ -129,7 +129,7 @@ export const mutations = {
   oddError(state) {
     state.length_wrong++;
   },
-  insert({ board, note, note_mode, offsetHover }, which) {
+  insert({ board, note, note_mode, offsetHover }, { auto_rm_note, which }) {
     if (offsetHover) {
       const { x, y } = offsetHover;
 
@@ -159,7 +159,9 @@ export const mutations = {
               this.dispatch("playground/done");
             }
 
-            note[y][x].splice(0);
+            if (auto_rm_note) {
+              note[y][x].splice(0);
+            }
           }
         }
       }
@@ -269,8 +271,15 @@ export const actions = {
       limit_wrong
     });
   },
-  done({ state, commit, getters }) {
-    if (state.length_wrong > 3) {
+  done({
+    state,
+    commit,
+    getters,
+    rootState: {
+      settings: { limit_wrong }
+    }
+  }) {
+    if (limit_wrong && state.length_wrong > 3) {
       ///// wrong
       commit("setReturn", false);
       commit(
@@ -308,5 +317,16 @@ export const actions = {
         return true;
       }
     }
+  },
+  insert(
+    {
+      commit,
+      rootState: {
+        settings: { auto_rm_note }
+      }
+    },
+    which
+  ) {
+    commit("insert", { auto_rm_note, which });
   }
 };

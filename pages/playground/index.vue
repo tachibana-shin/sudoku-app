@@ -14,7 +14,10 @@
         </v-btn>
         <v-btn
           icon
-          @click="$store.commit(`playground/setPlaying`, !playground.playing)"
+          @click="
+            $store.commit(`playground/setPlaying`, !playground.playing);
+            sound(`button`);
+          "
         >
           <v-icon>
             {{ playground.playing ? "mdi-pause" : "mdi-play" }}
@@ -73,12 +76,12 @@
             class="header d-flex text-body-2 font-weight-regular justify-space-between"
           >
             <div>{{ levelName }}</div>
-            <div>Số lỗi {{ playground.length_wrong }}/3</div>
-            <div>
+            <div v-if="$store.state.settings.limit_wrong">Số lỗi {{ playground.length_wrong }}/3</div>
+            <div v-if="$store.state.settings.show_point">
               <v-icon size="1.3em" color="inherit"> mdi-star-outline </v-icon>
               {{ $store.getters["playground/point"] }}
             </div>
-            <div>
+            <div v-if="$store.state.settings.stop_watch">
               <v-icon size="1.3em" color="inherit"> mdi-clock-outline </v-icon>
               {{ playground.time | timeToString }}
             </div>
@@ -116,7 +119,7 @@
                             playground.offsetHover.y,
                             colIndex - 1,
                             rowIndex - 1
-                          ),
+                          ) && $store.state.settings.highlight_by_regison,
                           'board--col__like':
                             playground.board[playground.offsetHover.y][
                               playground.offsetHover.x
@@ -125,8 +128,8 @@
                               playground.offsetHover.x
                             ].value ===
                               playground.board[rowIndex - 1][colIndex - 1]
-                                .value,
-                          'board--col__conflic': conflic(
+                                .value && $store.state.settings.lighlight_num_repeat,
+                          'board--col__conflic': $store.state.settings.auto_check_wrong && conflic(
                             playground.offsetHover.x,
                             playground.offsetHover.y,
                             colIndex - 1,
@@ -136,7 +139,7 @@
                       : {}),
                     ///validate
                     ...(playground.board[rowIndex - 1][colIndex - 1]
-                      .readonly !== true
+                      .readonly !== true && $store.state.settings.auto_check_wrong
                       ? {
                           'board--col__validate': validate(
                             colIndex - 1,
@@ -200,7 +203,13 @@
           <div
             class="tools-group d-flex align-center justify-space-between text-center mx-sm-4"
           >
-            <button v-ripple @click="$store.commit(`playground/restore`, -1)">
+            <button
+              v-ripple
+              @click="
+                $store.commit(`playground/restore`, -1);
+                sound(`undo`);
+              "
+            >
               <v-icon size="1.5em">
                 mdi-undo
               </v-icon>
@@ -211,7 +220,8 @@
               v-ripple
               @click="
                 playground.offsetHover &&
-                  eraser(playground.offsetHover.x, playground.offsetHover.y)
+                  eraser(playground.offsetHover.x, playground.offsetHover.y);
+                sound(`erase`);
               "
             >
               <v-icon size="1.5em"> mdi-eraser </v-icon>
@@ -221,7 +231,8 @@
             <button
               v-ripple
               @click="
-                $store.commit(`playground/setNote_Mode`, !playground.note_mode)
+                $store.commit(`playground/setNote_Mode`, !playground.note_mode);
+                sound(playground.note_mode ? `pencil_on` : `pencil_off`);
               "
             >
               <div class="icon--note-mode">
@@ -232,7 +243,13 @@
               </div>
               Ghi chú
             </button>
-            <button v-ripple @click="$store.commit(`playground/hint`)">
+            <button
+              v-ripple
+              @click="
+                $store.commit(`playground/hint`);
+                sound(`hint`);
+              "
+            >
               <v-badge
                 color="#0e47a1"
                 :content="`${playground.hint}`"
@@ -254,7 +271,10 @@
               v-for="number in 9"
               :key="number"
               v-ripple
-              @click="$store.commit(`playground/insert`, number)"
+              @click="
+                $store.dispatch(`playground/insert`, number);
+                keyBoardClick();
+              "
             >
               {{ number }}
             </button>
@@ -333,7 +353,7 @@ import { timeToString } from "~/helpers";
 
 export default {
   meta: {
-noBottom: true
+    noBottom: true
   },
   components: {
     AppMenuSettings
@@ -362,6 +382,13 @@ noBottom: true
       },
       get() {
         return !this.playground.playing;
+      }
+    }
+  },
+  watch: {
+    "playground.is_success"(value) {
+      if (value) {
+        this.sound("win");
       }
     }
   },
@@ -397,6 +424,24 @@ noBottom: true
         this.playground.board[y1][x1].value ===
           this.playground.board[y2][x2].value
       );
+    },
+
+    sound(name) {
+      if (this.$store.state.settings.sound === true) {
+        this.$sounds[name].play();
+      }
+    },
+
+    keyBoardClick() {
+      if (this.playground.offsetHover) {
+        const { value, def, readonly } = this.playground.offsetHover;
+
+        if (readonly) {
+          this.sound("error");
+        } else {
+          this.sound(this.playground.note_mode ? "edit__note" : "edit_value");
+        }
+      }
     }
   },
   filters: {
