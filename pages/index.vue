@@ -25,12 +25,12 @@
         ></v-img>
 
         <div class="text-body-2 mt-3 text-center font-weight-medium">
-          {{ $t("DAILY_CHALLENGE")}}
+          {{ $t("DAILY_CHALLENGE") }}
         </div>
         <div class="text-caption secondary--text font-weight-regular">
           Tháng 4 18
         </div>
-        
+
         <button
           class="play-challeng lighten text-body-2 text-center font-weight-regular blue--text text-uppercase"
           v-ripple
@@ -150,9 +150,13 @@ export default {
       return timeToString(this.$store.state.playground.time);
     },
     level() {
-      return this.$store.state.system.levels.find(
+      const level = this.$store.state.system.levels.find(
         item => item.value === this.$store.state.playground.level
-      ).text;
+      );
+
+      if (level) {
+        return level.text;
+      }
     }
   },
   methods: {
