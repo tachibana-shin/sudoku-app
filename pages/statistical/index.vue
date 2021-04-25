@@ -206,7 +206,7 @@ export default {
     },
     getBattlesCountWin(level) {
       return this.battles.filter(
-        item => item.level === value && item.is_success
+        item => item.level === level && item.is_success
       ).length;
     },
     getRatio(level) {
